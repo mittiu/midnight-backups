@@ -16,6 +16,14 @@ jobs:
       - name: Clonar repositório
         uses: actions/checkout@v4
 
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Instalar xlsx
+        run: npm install xlsx
+
       - name: Criar pasta
         run: mkdir -p backups
 
@@ -23,6 +31,9 @@ jobs:
         run: |
           curl https://apimit.onrender.com/backup \
           -o backups/backup-$(date +'%Y-%m-%d-%H-%M').json
+
+      - name: Gerar Excel
+        run: node gerar_excel.js
 
       - name: Commit
         run: |
