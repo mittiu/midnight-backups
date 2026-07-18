@@ -43,13 +43,11 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           
-          # 1. Puxa as atualizações primeiro para sincronizar com o servidor
+          # Garante sincronização antes de mexer em arquivos
           git pull origin main --rebase
           
-          # 2. Adiciona os novos arquivos de backup
           git add backups/
           
-          # 3. Comita e envia se houver mudanças
           if ! git diff --cached --quiet; then
             git commit -m "Backup $(date)"
             git push origin main
