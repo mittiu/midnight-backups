@@ -1,0 +1,37 @@
+name: Midnight Backup
+
+on:
+  schedule:
+    - cron: '0 0,12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repositório
+        uses: actions/checkout@v4
+
+      - name: Criar pasta
+        run: mkdir -p backups
+
+      - name: Baixar backup
+        run: |
+          curl https://apimit.onrender.com/backup \
+          -o backups/backup-$(date +'%Y-%m-%d-%H-%M').json
+
+      - name: Commit
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+          git add backups
+
+          git diff --cached --quiet || (
+            git commit -m "Backup $(date)"
+            git push
+          )
