@@ -13,11 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clonar repositorio
+      - name: Clonar repositório
         uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 0
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
@@ -38,19 +37,10 @@ jobs:
       - name: Gerar Excel
         run: node gerar_excel.js
 
-      - name: Commit e Push Definitivo
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          
-          # Garante sincronização antes de mexer em arquivos
-          git pull origin main --rebase
-          
-          git add backups/
-          
-          if ! git diff --cached --quiet; then
-            git commit -m "Backup $(date)"
-            git push origin main
-          else
-            echo "Nenhuma alteração detectada."
-          fi
+      - name: Auto Commit das Alterações
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Backup automatizado salvo com sucesso"
+          branch: main
+          commit_user_name: "GitHub Actions"
+          commit_user_email: "actions@github.com"
