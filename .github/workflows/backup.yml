@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Clonar repositório
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
@@ -35,13 +37,13 @@ jobs:
       - name: Gerar Excel
         run: node gerar_excel.js
 
-      - name: Commit
+      - name: Commit e Push
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-      
-          git add backups
-      
+          
+          git add backups/
+          
           if ! git diff --cached --quiet; then
             git commit -m "Backup $(date)"
             git pull --rebase origin main
