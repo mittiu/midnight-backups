@@ -16,7 +16,8 @@ jobs:
       - name: Clonar repositório
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          ref: main # Garante que o checkout seja na branch correta
+          fetch-depth: 0 # Baixa o histórico completo para evitar conflitos
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
