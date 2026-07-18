@@ -13,11 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clonar repositório
+      - name: Clonar repositorio
         uses: actions/checkout@v4
         with:
-          ref: main # Garante que o checkout seja na branch correta
-          fetch-depth: 0 # Baixa o histórico completo para evitar conflitos
+          ref: main
+          fetch-depth: 0
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
@@ -38,17 +38,21 @@ jobs:
       - name: Gerar Excel
         run: node gerar_excel.js
 
-      - name: Commit e Push
+      - name: Commit e Push Definitivo
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           
+          # 1. Puxa as atualizações primeiro para sincronizar com o servidor
+          git pull origin main --rebase
+          
+          # 2. Adiciona os novos arquivos de backup
           git add backups/
           
+          # 3. Comita e envia se houver mudanças
           if ! git diff --cached --quiet; then
             git commit -m "Backup $(date)"
-            git pull --rebase origin main
             git push origin main
           else
-            echo "Nenhuma alteração."
+            echo "Nenhuma alteração detectada."
           fi
