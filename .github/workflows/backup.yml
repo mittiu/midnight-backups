@@ -39,10 +39,13 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-
+      
           git add backups
-
-          git diff --cached --quiet || (
+      
+          if ! git diff --cached --quiet; then
             git commit -m "Backup $(date)"
-            git push
-          )
+            git pull --rebase origin main
+            git push origin main
+          else
+            echo "Nenhuma alteração."
+          fi
